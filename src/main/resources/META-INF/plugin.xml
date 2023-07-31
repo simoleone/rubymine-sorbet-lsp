@@ -27,5 +27,21 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <platform.lsp.serverSupportProvider implementation="im.simo.rubymine.sorbetlsp.SorbetLspServerSupportProvider"/>
+        <notificationGroup id="Sorbet LSP" displayType="BALLOON"/>
     </extensions>
+    <actions>
+        <group
+                id="im.simo.rubymine.sorbet-lsp.actions-group"
+                text="Sorbet LSP"
+                icon="/icons/pluginIcon.svg"
+                popup="true"
+        >
+            <add-to-group group-id="ToolsMenu"/>
+            <action
+                    id="im.simo.rubymine.sorbet-lsp.restart-lsp-action"
+                    class="im.simo.rubymine.sorbetlsp.RestartLspServerAction"
+                    text="Restart..."
+            />
+        </group>
+    </actions>
 </idea-plugin>
