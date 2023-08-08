@@ -37,10 +37,6 @@ tasks {
 //        untilBuild.set("232.*")
     }
 
-    runIde {
-        ideDir.set(file("/Users/simo/Library/Application Support/JetBrains/Toolbox/apps/RubyMine/ch-0/232.8660.186/RubyMine.app/Contents"))
-    }
-
     signPlugin {
         certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
         privateKey.set(System.getenv("PRIVATE_KEY"))
