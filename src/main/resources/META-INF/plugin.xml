@@ -26,8 +26,14 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <platform.lsp.serverSupportProvider implementation="im.simo.rubymine.sorbetlsp.SorbetLspServerSupportProvider"/>
+        <platform.lsp.serverSupportProvider implementation="im.simo.rubymine.sorbetlsp.SorbetServerSupportProvider"/>
         <notificationGroup id="Sorbet LSP" displayType="BALLOON"/>
+        <projectConfigurable
+                parentId="language"
+                instance="im.simo.rubymine.sorbetlsp.SorbetSettingsConfigurable"
+                id="im.simo.rubymine.sorbetlsp.SorbetSettingsConfigurable"
+                displayName="Sorbet LSP"
+                nonDefaultProject="true"/>
     </extensions>
     <actions>
         <group
@@ -39,7 +45,7 @@
             <add-to-group group-id="ToolsMenu"/>
             <action
                     id="im.simo.rubymine.sorbet-lsp.restart-lsp-action"
-                    class="im.simo.rubymine.sorbetlsp.RestartLspServerAction"
+                    class="im.simo.rubymine.sorbetlsp.RestartSorbetServerAction"
                     text="Restart..."
             />
         </group>

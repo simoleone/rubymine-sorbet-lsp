@@ -8,12 +8,12 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.platform.lsp.api.LspServerManager
 
 @Suppress("UnstableApiUsage")
-class RestartLspServerAction : AnAction() {
+class RestartSorbetServerAction : AnAction() {
   override fun actionPerformed(e: AnActionEvent) {
     val project = e.project
     if (project == null || project.isDefault) return
 
-    LspServerManager.getInstance(project).stopAndRestartIfNeeded(SorbetLspServerSupportProvider::class.java)
+    LspServerManager.getInstance(project).stopAndRestartIfNeeded(SorbetServerSupportProvider::class.java)
 
     NotificationGroupManager.getInstance()
       .getNotificationGroup("Sorbet LSP")
@@ -26,7 +26,7 @@ class RestartLspServerAction : AnAction() {
     val project = e.project
     if (project == null || project.isDefault) return
 
-    if (LspServerManager.getInstance(project).getServersForProvider(SorbetLspServerSupportProvider::class.java).isEmpty()) {
+    if (LspServerManager.getInstance(project).getServersForProvider(SorbetServerSupportProvider::class.java).isEmpty()) {
       e.presentation.isEnabled = false
     } else {
       e.presentation.isEnabled = true
