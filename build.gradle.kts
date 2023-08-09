@@ -5,7 +5,6 @@ plugins {
 }
 
 group = "im.simo.rubymine.sorbetlsp"
-version = "1.3"
 
 repositories {
     mavenCentral()
