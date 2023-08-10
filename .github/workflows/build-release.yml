@@ -14,17 +14,16 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: 'zulu'
           java-version: '17'
-          cache: 'gradle'
       - name: Build
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: ./gradlew build --info --no-daemon
+        run: ./gradlew build
         env:
           ORG_GRADLE_PROJECT_version: 0.1-DEV
       - name: Build and Sign
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        run: ./gradlew signPlugin --info --no-daemon
+        run: ./gradlew signPlugin
         env:
           ORG_GRADLE_PROJECT_version: ${{ github.ref_name }}
           CERTIFICATE_CHAIN: ${{ secrets.SIGNING_CERTIFICATE }}

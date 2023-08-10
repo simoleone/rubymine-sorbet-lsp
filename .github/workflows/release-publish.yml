@@ -1,0 +1,16 @@
+name: Publish
+
+on:
+  release:
+    types:
+      - published
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch release assets
+        run: |
+          gh --repo ${{ github.event.repository.full_name }} release download ${{ github.event.release.tag_name }}
+      - name: Publish to Jetbrains Marketplace
+        run: |
+          curl -i --header "Authorization: Bearer ${{ secrets.PUBLISH_TOKEN }}" -F xmlId=im.simo.rubymine.sorbet-lsp -F file=@rubymine-sorbet-lsp-${{ github.event.release.tag_name }}-signed.zip https://plugins.jetbrains.com/plugin/uploadPlugin
