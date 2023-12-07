@@ -1,7 +1,7 @@
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.8.22"
-    id("org.jetbrains.intellij") version "1.15.0"
+    id("org.jetbrains.intellij") version "1.16.1"
 }
 
 group = "im.simo.rubymine.sorbetlsp"
@@ -13,11 +13,11 @@ repositories {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2023.2")
+    version.set("2023.3")
     type.set("IU") // Target IDE Platform
 
     plugins.set(listOf(
-            "org.jetbrains.plugins.ruby:232.8660.185"
+            "org.jetbrains.plugins.ruby:233.11799.241"
     ))
 }
 
@@ -32,7 +32,7 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("232")
+        sinceBuild.set("233")
     }
 
     signPlugin {
