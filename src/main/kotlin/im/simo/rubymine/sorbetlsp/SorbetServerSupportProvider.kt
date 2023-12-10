@@ -30,20 +30,23 @@ class SorbetServerSupportProvider : LspServerSupportProvider {
 
 @Suppress("UnstableApiUsage")
 private class SorbetLspServerDescriptor(
-  val sorbetConfigProperties: SorbetConfigProperties, val executionContext: RubyGemExecutionContext, project: Project, roots: Array<out VirtualFile>
-) : LspServerDescriptor(project, "Sorbet", *roots) {
+  val sorbetConfigProperties: SorbetConfigProperties,
+  val executionContext: RubyGemExecutionContext,
+  project: Project,
+  roots: Array<out VirtualFile>
+) : LspServerDescriptor(
+  project, "Sorbet", *roots
+) {
   override fun isSupportedFile(file: VirtualFile) = file.fileType == RubyFileType.RUBY
 
   override val lspGoToDefinitionSupport: Boolean
     get() = sorbetConfigProperties.gotoDefinitionEnabled
 
   override fun startServerProcess(): OSProcessHandler {
-    val processHandler = executionContext.withWorkingDirPath(project.basePath).withGemScriptName(GEM_SCRIPT_NAME)
-      .withArguments(GEM_SCRIPT_ARGS).toRubyScriptExecutionContext()!!.createProcessHandler()
+    val processHandler = executionContext.toRubyScriptExecutionContext()!!.createProcessHandler()
     if (processHandler !is OSProcessHandler) {
       throw RuntimeException("hmm... RubyProcessHandler wasn't an OSProcessHandler.")
     }
-    LOG.warn(processHandler.toString())
     return processHandler
   }
 
@@ -58,16 +61,17 @@ private class SorbetLspServerDescriptor(
 
     fun createGemExecutionContext(sdk: Sdk, project: Project, file: VirtualFile): RubyGemExecutionContext? {
       val module = ModuleUtilCore.findModuleForFile(file, project)
-      if (BundlerUtil.hasGemfile(module)) {
-        val gemfile = BundlerUtil.getGemfile(module)
-        val hasMissingGems = gemfile != null && BundlerGemInfrastructure.hasMissingGems(gemfile)
-        if (!hasMissingGems) {
-          return RubyGemExecutionContext.tryCreate(null, module, GEM_NAME)
-        }
-      } else {
-        return RubyGemExecutionContext.tryCreate(sdk, module, GEM_NAME)
+      val gemfile = BundlerUtil.getGemfile(module) ?: return null // bail if no Gemfile
+      if (BundlerGemInfrastructure.hasMissingGems(gemfile)) { // bail if bundle install needs to be run
+        return null
       }
-      return null
+
+      return RubyGemExecutionContext.tryCreate(null, module, GEM_NAME)
+        // NB: Use the Gemfile's parent directory as safest option for typical sorbet project structure.
+        //     Using project content root can get tricky since there may (rarely) be multiple to choose from.
+        ?.withWorkingDir(gemfile.parent)
+        ?.withGemScriptName(GEM_SCRIPT_NAME)
+        ?.withArguments(GEM_SCRIPT_ARGS)
     }
 
     fun tryCreate(project: Project, file: VirtualFile): SorbetLspServerDescriptor? {
